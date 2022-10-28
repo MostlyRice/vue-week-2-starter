@@ -43,9 +43,13 @@
                         <th>Present?</th>
                     </tr>
 
-                   <!-- TODO create table rows 
-                   Each row will have a checkbox, bound to the app's data 
-                   When the checkbox is checked/unchecked, the student will be signed in/out -->
+                    <tr v-for="student in students">
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.starID }}</td>
+                        <td>
+                            <input type="checkbox" v-model="student.present" v-on:change="arrivedOrLeft(student)">
+                        </td>
+                    </tr>
 
                 </table>
             </div>
@@ -57,13 +61,7 @@
 
     </div>
 
-    <script>
-
-
-        // TODO Vue app     
-
-
-    </script>
+<script src="./student.js"></script>
 
 </body>
 
