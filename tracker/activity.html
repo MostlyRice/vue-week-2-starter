@@ -1,119 +1,116 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <title>Practice Tracker</title>
-    <script src="https://unpkg.com/vue@next"></script>
-    
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-        crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css" type="text/css">
-</head>
-
-<body>
-    <div id="app">
-
-        <!-- TODO display the name of the activity -->
-        <h1 class="text-center">Time Tracker</h1>
-
-        <div id="add-hours" class="card">
-
+   <head>
+      <title>Practice Tracker</title>
+      <script src="https://unpkg.com/vue@next"></script>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+         crossorigin="anonymous">
+      <link rel="stylesheet" href="styles.css" type="text/css">
+   </head>
+   <body>
+      <div id="app">
+         <!-- display the name of the activity -->
+         <h1 class="text-center">{{ activity }} Time Tracker</h1>
+         <div id="add-hours" class="card">
             <h2 class="card-header">Add Records</h2>
             <div class="card-body">
-               
-                <!-- TODO use v-if to show this if there are validation errors -->
-                <div class="alert alert-danger">
-                    <!-- TODO show a list of validation errors from form -->
-                </div>
+               <div class="alert alert-danger" v-if="errors.length > 0">
+                  <ul>
+                     <li v-for="error in errors">{{ error }}</li>
+                  </ul>
+               </div>
+               <div class="form-group">
+                  <label class="form-label" for="date">What date did you do this activity?</label>
+                  <input id="date" class="form-control" type="date" v-model="dateString">
+                  <small id="date-help" class="form-text text-muted">
+                  Date must be today or in the past.
+                  </small>
+               </div>
+               <div class="form-group">
+                  <label class="form-label" for="hours">How many hours did you practice for?</label>
+                  <input id="hours" class="form-control" type="number" min="0" max="24" v-model.number="hours">
+                  <small id="hours-help" class="form-text text-muted">
+                  Enter a number of hours, more than 0, up to a maximum of 24
+                  </small>
+               </div>
+               <div class="form-group">
+                  <label class="form-label" for="type">What type? </label>
+                  <select class="form-control" v-model="type">
+                     <option v-for="activityType in types">{{ activityType }}</option>
+                  </select>
+               </div>
+               <div class="form-label pb-2">
+                  What media?
+               </div>
+               <div class="form-check-inline">
+                  <input id="media1" class="form-check-input" type="radio" value="Traditional" v-model="medium">
+                  <label class="form-check-label" for="media1">
+                     Traditional
+                  </label>
+               </div>
+               <div class="form-check-inline">
+                  <input id="media2" class="form-check-input" type="radio" value="Digital" v-model="medium">
+                  <label class="form-check-label" for="media2">
+                     Digital
+                  </label>
+               </div>
+               <div class="form-check-inline">
+                  <input id="completed-checkbox" class="form-check-input" type="checkbox" value="Completed?" v-model="completed">
+                  <label class="form-check-input" for="completed-checkbox">
+                     Completed?
+                  </label>
+               </div>
 
-                <div class="form-group">
-                    <!-- TODO display name of activity in the label -->
-                    <label class="form-label" for="date">What date did you do this activity?</label>
-                    <!-- TODO use v-model to connect this input to dateString data -->
-                    <input id="date" class="form-control" type="date">
-                    <small id="date-help" class="form-text text-muted">
-                        Date must be today or in the past.
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="hours">How many hours did you practice for?</label>
-                    <!-- TODO use v-model to connect this input to hours data -->
-                    <input id="hours" class="form-control" type="number" min="0" max="24">
-                    <small id="hours-help" class="form-text text-muted">
-                        Enter a number of hours, more than 0, up to a maximum of 24
-                    </small>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="type">What type?</label>
-                    <!-- TODO Create select element, use v-model to connect to the types -->
-                    <!-- TODO Use v-for to create option elements, one for each type -->
-                </div>
-
-                <div class="form-label pb-2">
-                    What media?
-                </div>
-
-                <div class="form-check-inline">
-                    <!-- TODO v-model media -->
-                    <input id="media1" class="form-check-input" type="radio">
-                    <label class="form-check-label" for="media1">  <!--TODO Display text -->  </label>
-                </div>
-
-                <div class="form-check-inline">
-                    <!-- TODO v-model media -->
-                    <input id="media2" class="form-check-input" type="radio">
-                    <label class="form-check-label" for="media2">  <!-- TODO Display text -->  </label>
-                </div>
-
-                <div>
-                    <!-- TODO Add v-on:click -->
-                    <button class="btn btn-primary mt-2" type="button">Add record</button>
-                </div>
-                
+               <div class="form-group">
+                  <label class="form-label" for="notes">Notes</label>
+                  <input id="notes" class="form-control" type="text" v-model="notes">
+                  <small id="notes-info" class="form-text text-muted">
+                  Enter any notes about this practice session.
+                  </small>
+               </div>
+               <div>
+                  <button class="btn btn-primary mt-2" type="button" v-on:click="submit">Add record</button>
+               </div>
             </div>
-        </div>
-
-        <div class="card">
+         </div>
+         <!-- BEGINNING OF DATA DISPLAY -->
+         <div class="card">
             <h2 class="card-header">Activity Records</h2>
-
             <div class="card-body">
-
-                <h3> <!-- TODO Display number of records --> records</h3>
-
-                <div id="records">
-                    <table class="table table-hover">
-                        <tr>
-                            <th>Date</th>
-                            <th>How many hours?</th>
-                            <th>Type</th>
-                            <th>Media</th>
-                        </tr>
-                        <!-- TODO use v-for to create one table row for each activity record -->
-                    </table>
-                </div>
+               <h3>
+                   {{ totalRecordsMessage }}
+               </h3>
+               <div id="records">
+                  <table class="table table-hover">
+                     <tr>
+                        <th>Date</th>
+                        <th>How many hours?</th>
+                        <th>Type</th>
+                        <th>Media</th>
+                        <th>Completed?</th>
+                        <th>Notes</th>
+                     </tr>
+                     <tr v-for="record in activityRecords" v-bind:class=" {} ">
+                        <td>{{ shortDate(record.date) }}</td>
+                        <td>{{ record.hours }}</td>
+                        <td>{{ record.type }}</td>
+                        <td>{{ record.media }}</td>
+                        <td>{{ record.completed }}</td>
+                        <td>{{ shortenedNotes(record.notes) }}</td>
+                     </tr>
+                  </table>
+               </div>
             </div>
-        </div>
-
-
-        <div class="card">
+         </div>
+         <div class="card">
             <h2 class="card-header">Summary</h2>
-
             <div class="card-body">
-
-                <!-- TODO add computed property to calculate the total hours -->
-                <p>You have practiced a total of <!-- TODO display total hours --> hours</p>
-
-                <!-- Challenge question! Display a list of the total hours for each type.  -->
-          
+               <p>
+                  You have practiced a total of <!-- display total hours --> {{ totalHours }} hours
+               </p>
             </div>
-        </div>
-
-    </div>
-
-<script src="./activity.js"></script>
-
-</body>
-
+         </div>
+      </div>
+      <script src="./activity.js"></script>
+   </body>
 </html>
